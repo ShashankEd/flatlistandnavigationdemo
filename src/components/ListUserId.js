@@ -11,6 +11,9 @@ import {
 import {getListUserids} from '../store/reducers/listUserId'
 import {useDispatch,useSelector} from 'react-redux';
 import {itemSeparator} from './ViewComponents';
+import {
+    getDistinctValues
+} from '../config/HelperFunction'
 
 const ListUserId = (props) => {
     const getListUseridsResponse = useSelector(state=> state.getListUserids);
@@ -18,17 +21,9 @@ const ListUserId = (props) => {
     const dispatch = useDispatch();
     const [isloading,setIsLoading] = useState(true);
 
-    getDistinctValues = (data) => {
-        const unique = [...data.reduce((map,obj) => map.set(obj.userId,obj), new Map()).values()];
-        // console.log(unique);
-        return unique;
-    }
-
     useEffect(async() => {
         await dispatch(getListUserids.fetchCall({},{}));
         if(getListUseridsResponse?.response) {
-            console.log("inside useEffect ", getListUseridsResponse?.response);
-            //get only 
             setData(getDistinctValues(getListUseridsResponse?.response));
             setIsLoading(false);
         }
