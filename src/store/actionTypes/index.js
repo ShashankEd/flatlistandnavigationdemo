@@ -1,0 +1,3 @@
+const ACTION_TYPE = {
+    LIST_USER : 'LIST_USER'
+}
