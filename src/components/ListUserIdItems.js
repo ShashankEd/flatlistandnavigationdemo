@@ -26,8 +26,8 @@ const LisrUserIdItems = ({navigation, route}) => {
     }
 
     useEffect(() => {
-        console.log(getListUseridsResponse?.response);
-        console.log("selectedId",route,_get(route,DATA.SELECTED_ID));
+        // console.log(getListUseridsResponse?.response);
+        // console.log("selectedId",route,_get(route,DATA.SELECTED_ID));
         if(getListUseridsResponse?.response) {
            let data= getListUseridsResponse?.response.filter(
                 item => item.userId === _get(route,DATA.SELECTED_ID)
@@ -54,7 +54,7 @@ const LisrUserIdItems = ({navigation, route}) => {
     return(
         <View style={styles.mainContainer}>
            { isloading 
-           ? <View style={styles.loading}> <Text>Loading.....</Text> </View>
+           ?  <Text>Loading.....</Text> 
            : <FlatList
                 data={data}
                 keyExtractor={keyExt}
