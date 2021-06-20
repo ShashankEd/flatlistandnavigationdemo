@@ -6,19 +6,24 @@ import {
     StyleSheet,
     TouchableOpacity,
     PixelRatio,
-    Dimensions
+    Dimensions,
+    TextInput
 } from 'react-native';
 import {getListUserids} from '../store/reducers/listUserId'
 import {shallowEqual, useDispatch,useSelector} from 'react-redux';
 import {itemSeparator} from './ViewComponents';
 import {
-    getDistinctValues
+    getDistinctValues,
+    searchObjectById,
+    sortByAscOrDesc
 } from '../config/HelperFunction'
 import {get as _get} from 'lodash';
 const ListUserId = (props) => {
     const getListUseridsResponse = useSelector(state=> state.getListUserids,shallowEqual);
     const dispatch = useDispatch();
-
+    const [searchKey, setSearchKey] = useState(0);
+    const [ascOrDescFlag, setAscOrDescFlag] = useState(true);
+    const [random,setRandom] = useState(false)
     //useEffect where api call is being done- its like componentDidMount called once at mount stage
     useEffect(() => {
         async function makeAPICall() {
@@ -57,17 +62,57 @@ const ListUserId = (props) => {
     //useCallback to call getDistinctValues function
     const cachedGetDistinct = useCallback((users) => getDistinctValues(users),[]);
 
+    const searchObject = useCallback((serchKeyValue,data) => searchObjectById(serchKeyValue,data),[]);
+
+    const sortByAscOrDescFun = useCallback((data,ascdes,ran) =>sortByAscOrDesc(data,ascdes,ran) ,[ascOrDescFlag,random]);
+
+    const ascOrDesc = () => {
+        return (
+            <View style={styles.sortSec}>
+                <TouchableOpacity  style={styles.touchable} onPress={() => {
+                    setAscOrDescFlag(true)
+                    setRandom(false)
+                }}>
+                    <Text style={styles.text}>{`Asc`}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity  style={styles.touchable} onPress={() =>{
+                     setAscOrDescFlag(false)
+                     setRandom(false)
+                }}>
+                    <Text style={styles.text}>{`Desc`}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity  style={styles.touchable} onPress={() => setRandom(true)}>
+                    <Text style={styles.text}>{`Random`}</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    const sortView = useCallback(() => ascOrDesc(),[]);
+
     return(
         <View style={styles.mainContainer}>
            { !getListUseridsResponse?.response 
            ? <Text>Loading.....</Text> 
-           :  <FlatList
-                data={cachedGetDistinct(getListUseridsResponse?.response)}
+           :  <View style={styles.flatList}>
+               {sortView()}
+               <TextInput placeholder={`Enter search key`} style={styles.textInput} defaultValue={searchKey} onChangeText={(value) => setSearchKey(value)}/>
+               <FlatList
+                data={
+                    searchKey && setSearchKey!= ''
+                    ? searchObject(searchKey,getListUseridsResponse?.response)
+                    : (ascOrDescFlag && !random
+                        ?  cachedGetDistinct(getListUseridsResponse?.response)
+                        :  (random 
+                                ? sortByAscOrDescFun(getListUseridsResponse?.response,false,random)
+                                : sortByAscOrDescFun(getListUseridsResponse?.response,ascOrDescFlag,false)))
+                }
                 keyExtractor={keyExt}
                 renderItem={cachedRenderItem}
                 ItemSeparatorComponent={itemSep}
                 windowSize={21}
             />
+           </View>
             }
         </View>
     )
@@ -96,6 +141,27 @@ const styles = StyleSheet.create({
         flex:1,
         justifyContent:'center',
         alignItems:'center',
+    },
+    flatList: {
+        flex:1,
+    },
+    textInput: {
+        marginHorizontal: Dimensions.get('screen').height * 0.01,
+        paddingBottom: Dimensions.get('screen').height * 0.04,
+        fontFamily:'Verdana',
+        fontSize: PixelRatio.getFontScale() * 30
+    },
+    sortSec: {
+        // flex:1,
+        // height: 
+        // justifyContent:'flex-end',r
+        // padding:Dimensions.get('screen').height * 0.04,
+        flexDirection:'row',
+        justifyContent:'space-around'
+    },
+    touchable: {
+        // backgroundColor:'yellow',
+        // width:40
     }
 })
 
