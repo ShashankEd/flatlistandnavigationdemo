@@ -19,13 +19,13 @@ const ListUserId = (props) => {
     const getListUseridsResponse = useSelector(state=> state.getListUserids,shallowEqual);
     const dispatch = useDispatch();
 
-    //useEffect where api call is being done
+    //useEffect where api call is being done- its like componentDidMount called once at mount stage
     useEffect(() => {
         async function makeAPICall() {
             await dispatch(getListUserids.fetchCall({},{}));
         }
         makeAPICall();
-    },[])
+    },[dispatch])
 
     //key extractor using useCallback 
     const keyExt = useCallback((item) => item.userId,[]);

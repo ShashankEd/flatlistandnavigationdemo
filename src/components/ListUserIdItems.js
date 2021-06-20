@@ -8,12 +8,12 @@ import {
     PixelRatio,
     Dimensions,
 } from 'react-native';
-import {useSelector} from 'react-redux';
+import {useSelector,shallowEqual} from 'react-redux';
 import {get as _get} from 'lodash';
 import {DATA} from '../config/appConstants';
 import {itemSeparator} from './ViewComponents';
 const LisrUserIdItems = ({navigation, route}) => {
-    const getListUseridsResponse = useSelector(state=> state.getListUserids);
+    const getListUseridsResponse = useSelector(state=> state.getListUserids,shallowEqual);
     const [data,setData] = useState([]);
     const [isloading,setIsLoading] = useState(true);
     

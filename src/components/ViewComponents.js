@@ -7,7 +7,7 @@ import {
     StyleSheet,
     Dimensions 
 } from 'react-native';
-//item separator comopnent 
+//Below function will return item separator comopnent for the flatlist
 export const itemSeparator = () => {
    return (
     <View style={styles.itemSep}>
