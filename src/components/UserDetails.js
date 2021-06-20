@@ -11,6 +11,7 @@ import {DATA} from '../config/appConstants';
 const UserDetails = ({navigation, route}) => {
     const title = _get(route,DATA.SELECTED_TITLE);
     const id = _get(route,DATA.SELECTED_ID);
+    
     return(
         <View style={styles.mainContainer}>
             <Text style={styles.text}>{`The id is : ${id}`}</Text>

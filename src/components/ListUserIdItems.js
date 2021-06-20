@@ -16,17 +16,18 @@ const LisrUserIdItems = ({navigation, route}) => {
     const getListUseridsResponse = useSelector(state=> state.getListUserids);
     const [data,setData] = useState([]);
     const [isloading,setIsLoading] = useState(true);
-
+    
+    //key extractor using useCallback 
     const keyExt = useCallback((item) => item.userId,[]);
     
+    //function to handle onPress on the list item 
     const handleUserIdPress =(id,title) => {
         //navigate to user details screen
         navigation.navigate('UserDetails',{selectedId: id,selectedTitle: title });
     }
 
+    //useEffect to store the response into the state 
     useEffect(() => {
-        // console.log(getListUseridsResponse?.response);
-        // console.log("selectedId",route,_get(route,DATA.SELECTED_ID));
         if(getListUseridsResponse?.response) {
            let data= getListUseridsResponse?.response.filter(
                 item => item.userId === _get(route,DATA.SELECTED_ID)
@@ -36,18 +37,21 @@ const LisrUserIdItems = ({navigation, route}) => {
         }
     },[])
     
+    //renderItem function to return the list item
     const renderItem = ({item}) => {
         return(
             <View style={styles.item}>
-               <TouchableOpacity onPress={() => handleUserIdPress(item.userId,item.title)}>
+               <TouchableOpacity onPress={() => handleUserIdPress(item.id,item.title)}>
                     <Text style={styles.text}>{`Id: ${item.id}`}</Text>
                </TouchableOpacity>
             </View>
         )
     }
 
+    //useCallback to call renderItem function to return the list item
     const cachedRenderItem = useCallback((item) => renderItem(item),[]);
 
+    //useCallback to cal the itemSeparator funtion 
     const itemSep = useCallback(() => itemSeparator(),[])
 
     return(

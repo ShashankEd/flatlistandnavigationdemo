@@ -9,34 +9,35 @@ import {
     Dimensions
 } from 'react-native';
 import {getListUserids} from '../store/reducers/listUserId'
-import {useDispatch,useSelector} from 'react-redux';
+import {shallowEqual, useDispatch,useSelector} from 'react-redux';
 import {itemSeparator} from './ViewComponents';
 import {
     getDistinctValues
 } from '../config/HelperFunction'
 import {get as _get} from 'lodash';
 const ListUserId = (props) => {
-    const getListUseridsResponse = useSelector(state=> state.getListUserids);
-    const [data,setData] = useState([]);
+    const getListUseridsResponse = useSelector(state=> state.getListUserids,shallowEqual);
     const dispatch = useDispatch();
-    const [isloading,setIsLoading] = useState(true);
 
-    useEffect(async() => {
-        await dispatch(getListUserids.fetchCall({},{}));
-        if(getListUseridsResponse?.response) {
-            setData(getDistinctValues(getListUseridsResponse?.response));
-            setIsLoading(false);
+    //useEffect where api call is being done
+    useEffect(() => {
+        async function makeAPICall() {
+            await dispatch(getListUserids.fetchCall({},{}));
         }
+        makeAPICall();
     },[])
 
+    //key extractor using useCallback 
     const keyExt = useCallback((item) => item.userId,[]);
     
+    //handle when user presses on the list item
     const handleUserIdPress =(id) => {
         //navigate to list user item list screen
         const {navigation} = props;
         navigation.navigate('LisrUserIdItems',{selectedId: id});
     }
     
+    //function which returns the list item 
     const renderItem = ({item}) => {
         return(
             <View style={styles.item}>
@@ -47,16 +48,21 @@ const ListUserId = (props) => {
         )
     }
 
+    //useCallback to call renderItem
     const cachedRenderItem = useCallback((item) => renderItem(item),[]);
 
+    //useCallback to call itemSeparator
     const itemSep = useCallback(() => itemSeparator(),[])
+
+    //useCallback to call getDistinctValues function
+    const cachedGetDistinct = useCallback((users) => getDistinctValues(users),[]);
 
     return(
         <View style={styles.mainContainer}>
-           { isloading 
+           { !getListUseridsResponse?.response 
            ? <Text>Loading.....</Text> 
            :  <FlatList
-                data={data}
+                data={cachedGetDistinct(getListUseridsResponse?.response)}
                 keyExtractor={keyExt}
                 renderItem={cachedRenderItem}
                 ItemSeparatorComponent={itemSep}
