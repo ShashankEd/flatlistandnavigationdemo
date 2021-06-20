@@ -19,9 +19,10 @@ export const sortByAscOrDesc = (data,isAsc,isRamdom) => {
     let mapRandoms = new Map();
     if(!isRamdom) {
         if(!isAsc) {
-            result = result.sort((a,b) => b.userId - a.userId); //O(n)
+            result = result.sort((a,b) => b.userId - a.userId);
         }
-    } else {
+    } 
+    else {
         const min = 1;
         const max = result.length;
         const len = [...mapRandoms.values()].length;//0

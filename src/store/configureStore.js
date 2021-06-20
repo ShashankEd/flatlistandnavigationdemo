@@ -2,7 +2,6 @@ import thunkMiddleware from 'redux-thunk';
 import {persistStore, persistReducer, REHYDRATE} from 'redux-persist';
 import {createStore, combineReducers, applyMiddleware} from 'redux';
 import {mapValues} from 'lodash';
-//@ts-ignore
 import logger from 'redux-logger';
 import * as reducers from './reducers';
 import storage from 'redux-persist/lib/storage';
