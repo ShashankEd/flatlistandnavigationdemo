@@ -1,7 +1,7 @@
-// import apiConstants from '../../config/apiConstants';
+import {ENDPOINT} from '../../config/apiConstants';
 import {getRequest} from '../requestService';
 
-const endPoint = 'https://jsonplaceholder.typicode.com/posts';
+const endPoint = ENDPOINT.LIST_USER_IDS;
 /**
  * Get the user list
  * @param body : object : payload for GET api call

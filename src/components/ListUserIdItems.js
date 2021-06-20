@@ -7,7 +7,6 @@ import {
     TouchableOpacity,
     PixelRatio,
     Dimensions,
-    Alert
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {get as _get} from 'lodash';
